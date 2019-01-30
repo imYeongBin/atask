@@ -1,4 +1,4 @@
-package VO;
+package atask.VO;
 
 public class init {
 
