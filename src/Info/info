@@ -1,6 +1,7 @@
 ## 서버에서 사용되는 핵심 정보들을  key = value 형태로 할당하여 사용할 수 있게 한다.
 ## resource/properties/info
 
+
 driver=oracle.jdbc.driver.OracleDriver
 db_ip=jdbc:oracle:thin:@192.168.0.23:1521:orcl
 name=scott

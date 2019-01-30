@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+ <configuration>
+ 	<typeAliases>
+ 		<!-- vo 가지고 오기 -->
+ 		<typeAlias alias="new" type="VO/new"/>
+ 	</typeAliases>
+ 	<mappers>
+ 		<!-- mapper와 연결 -->
+ 		<mapper resource="Mapper/newMapper.xml"/>
+ 	</mappers>
+ </configuration>

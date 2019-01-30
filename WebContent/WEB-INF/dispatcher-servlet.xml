@@ -26,7 +26,7 @@
 	<context:annotation-config />
 	<!-- annotation이 설정된 클래스만 객체로 등록 처리 -->
 	<!-- spring은 model2와 달리 아래와 같은 형식을 메모리에 올리고 화면을 시작한다. -->
-	<context:component-scan base-package="springweb">
+	<context:component-scan base-package="atask">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
@@ -36,7 +36,7 @@
 			classpath:/resource/properties/info 파일로 공통 정보가 key value
       		값으로 설정되어 있다.
 	-->
-	<context:property-placeholder location="classpath:resource/properties/info" />	
+	<context:property-placeholder location="classpath:Info/info" />
 	
 	<!-- 
 	spring의 view를 선언하기
@@ -62,7 +62,7 @@
 	</bean>
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/view/"/>
+		<property name="prefix" value="VIEW/"/>
 		<!-- view단을 호출할 때, 자동으로 .jsp가 호출 될 수 있게 처리한다. -->
 		<property name="suffix" value=".jsp" />
 		<property name="order" value="1" />
@@ -88,7 +88,7 @@
        -->
       <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
       		<property name="dataSource" ref="dataSource"/>
-      		<property name="configLocation" value="classpath:resource/mybatis.Spring.xml"/>
+      		<property name="configLocation" value="classpath:Mapper/mybatis.Spring.xml"/>
       </bean>
       <!-- 
       	자동으로 객체가 생성되는 DAO단을 등록해준다.
@@ -96,6 +96,6 @@
       	2. 여러 패키지는 " , "로 구분하여 추가등록하면 된다.
       -->
       <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-      	<property name="basePackage" value="springweb.a03_mvc.a03_dao, springweb.b01_calendar" />
+      	<property name="basePackage" value="atask.Databse" />
       </bean>
 </beans>
