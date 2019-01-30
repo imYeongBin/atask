@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- spring에서 쓰이는 객체들을 선언 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:task="http://www.springframework.org/schema/task" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:util="http://www.springframework.org/schema/util"
+	 xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+  		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd     
+        http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-4.0.xsd
+   		http://www.springframework.org/schema/websocket
+		http://www.springframework.org/schema/websocket/spring-websocket.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd" >
+	<context:annotation-config />
+	<!-- annotation이 설정된 클래스만 객체로 등록 처리 -->
+	<!-- spring은 model2와 달리 아래와 같은 형식을 메모리에 올리고 화면을 시작한다. -->
+	<context:component-scan base-package="springweb">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+	<!-- 공통 설정 정보 위치 지정 : context:property-placeholder 
+		classpath는 현재 src로 설정되어
+			classpath:/resource/properties/info 파일로 공통 정보가 key value
+      		값으로 설정되어 있다.
+	-->
+	<context:property-placeholder location="classpath:resource/properties/info" />	
+	
+	<!-- 
+	spring의 view를 선언하기
+	1. .jsp
+	2. bean ajax json(spring 지원) : ArrayList ==> json ==> 한글 encoding/decoding ==> view 단
+	3. bean 파일 업로드, 다운로드.
+	4. bean excel, pdf, ...
+	5. bean 소켙통신
+	 -->
+	 
+	 <!-- 
+	 controller에서 return 	호출하는 view가 jsp 호출인 것인지, bean으로 등록된 view를 호출할 것인지를 구분하기 위한
+	 기준을 설정하는 viewResolver가 필요하다 .
+	 1. dispatcher에 bean이 id값으로 있으면, 그 bean을 viewer로 사용하고,
+	 2. 없으면 모두 다 jsp로 설정한다.
+	  -->
+	 <!-- ArrayList ==> Json 데이터로 변경 -->
+	<bean id="bnViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0" />
+	</bean>
+	<bean id="pageJsonReport" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" >
+	 	<property name="contentType" value="text/html;charset=utf-8" />
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/"/>
+		<!-- view단을 호출할 때, 자동으로 .jsp가 호출 될 수 있게 처리한다. -->
+		<property name="suffix" value=".jsp" />
+		<property name="order" value="1" />
+	</bean>
+	
+	<!-- DB연결 설정 : connection pool - web server가 
+      DB를 접속할 때, 효율적으로 하기위한 추상적인 개념 처리..
+      1. destory-method: 해당 내용을 처리한 후, 자원해제를 위한 메서드 호출..
+       -->
+      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+      	destroy-method="close"	
+      	>
+      	<!-- db 정보를 처리.. -->
+      	<property name="driverClassName" value="${driver}"/>
+      	<property name="url"  value="${db_ip}"/>
+      	<property name="username"  value="${name}"/>
+      	<property name="password"  value="${pass}"/>
+      </bean>
+      <!-- Mybatis 설정 처리..
+      1. DB연결된 자원을 연결처리..
+      2. Mybatis와 설정된 정보로 연결처리..
+      3. default DAO 패키지를 설정처리..
+       -->
+      <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+      		<property name="dataSource" ref="dataSource"/>
+      		<property name="configLocation" value="classpath:resource/mybatis.Spring.xml"/>
+      </bean>
+      <!-- 
+      	자동으로 객체가 생성되는 DAO단을 등록해준다.
+      	1. dao 인터페이스가 있는 패키지를 등록한다.
+      	2. 여러 패키지는 " , "로 구분하여 추가등록하면 된다.
+      -->
+      <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+      	<property name="basePackage" value="springweb.a03_mvc.a03_dao, springweb.b01_calendar" />
+      </bean>
+</beans>
